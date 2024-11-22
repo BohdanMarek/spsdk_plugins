@@ -30,6 +30,7 @@ jobs:
 
   package:
     name: Build Packages
+    needs: [get-packages]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
