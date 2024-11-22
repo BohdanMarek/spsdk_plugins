@@ -48,6 +48,7 @@ jobs:
         with:
           path: ${{ matrix.package }}
           attest-build-provenance-github: 'true'
+          artifact-name: package-${{ matrix.package }}
 
   deploy:
     name: Upload Releases To PyPI
@@ -64,8 +65,9 @@ jobs:
     - name: Download Packages
       uses: actions/download-artifact@v4
       with:
-        name: Packages
+        pattern: package-*
         path: dist
+        merge-multiple: true
 
     #- name: Publish packages to PyPI
     #  uses: pypa/gh-action-pypi-publish@v1.9.0
