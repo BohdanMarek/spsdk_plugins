@@ -60,27 +60,28 @@ jobs:
     name: Upload Releases To PyPI
     needs: [package]
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/spsdk-${{ matrix.package }} # TODO take this from pyproject.toml
     permissions:
       id-token: write
     strategy:
       matrix:
         #package: ${{fromJson(needs.get-packages.outputs.packages)}}
         package: [codecheck, jlink]
-    environment:
-      name: pypi
-      url: https://pypi.org/project/spsdk-${{ matrix.package }} # TODO take this from pyproject.toml
+   
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Download Packages
-        uses: actions/download-artifact@v4
-        with:
-          pattern: package-${{ matrix.package }}
-          path: dist
-          merge-multiple: true
+    - name: Download Package
+      uses: actions/download-artifact@v4
+      with:
+        pattern: package-${{ matrix.package }}
+        path: dist
+        merge-multiple: true
 
-        - name: List files using ls
-          run: ls dist
+      - name: List files using ls
+        run: ls dist
 
       #- name: Publish packages to PyPI
       #  uses: pypa/gh-action-pypi-publish@v1.9.0
