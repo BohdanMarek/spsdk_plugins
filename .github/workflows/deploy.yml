@@ -54,6 +54,7 @@ jobs:
         with:
           path: ${{ matrix.package }}
           attest-build-provenance-github: 'true'
+          upload-name-suffix: -${{ matrix.package }}
           artifact-name: dist-${{ strategy.job-index }}
 
       - name: List files using ls
