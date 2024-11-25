@@ -55,18 +55,18 @@ jobs:
           path: ${{ matrix.package }}
           attest-build-provenance-github: 'true'
           upload-name-suffix: -${{ matrix.package }}
-          artifact-name: dist-${{ strategy.job-index }}
-
-      - name: List files using ls
-        run: ls /tmp/baipp/dist/
 
   deploy:
     name: Upload Releases To PyPI
     needs: [package]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        #package: ${{fromJson(needs.get-packages.outputs.packages)}}
+        package: [codecheck, jlink]
     environment:
       name: pypi
-      url: https://pypi.org/project/
+      url: https://pypi.org/project/spsdk-${{ matrix.package }} # TODO take this from pyproject.toml
     permissions:
       id-token: write
     steps:
@@ -75,9 +75,12 @@ jobs:
     - name: Download Packages
       uses: actions/download-artifact@v4
       with:
-        pattern: package-*
+        pattern: package-${{ matrix.package }}
         path: dist
         merge-multiple: true
+
+      - name: List files using ls
+        run: ls dist
 
     #- name: Publish packages to PyPI
     #  uses: pypa/gh-action-pypi-publish@v1.9.0
