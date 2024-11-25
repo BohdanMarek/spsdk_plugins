@@ -54,7 +54,7 @@ jobs:
         with:
           path: ${{ matrix.package }}
           attest-build-provenance-github: 'true'
-          artifact-name: package-${{ matrix.package }}
+          artifact-name: dist-${{ matrix.package }}-${{ github.run_id }}
 
       - name: List files using ls
         run: ls /tmp/baipp/dist/
