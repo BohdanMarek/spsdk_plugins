@@ -73,15 +73,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-    # - name: Download Package
-    #   uses: actions/download-artifact@v4
-    #   with:
-    #     pattern: package-${{ matrix.package }}
-    #     path: dist
+      - name: Download Package
+        uses: actions/download-artifact@v4
+        with:
+          name: Packages-${{ matrix.package }}
+          path: dist
     #     merge-multiple: true
 
-    #   - name: List files using ls
-    #     run: ls dist
+      - name: List files using ls
+        run: ls dist
 
       #- name: Publish packages to PyPI
       #  uses: pypa/gh-action-pypi-publish@v1.9.0
