@@ -37,7 +37,8 @@ jobs:
       attestations: write
     strategy:
       matrix:
-        package: ${{fromJson(needs.get-packages.outputs.packages)}}
+        #package: ${{fromJson(needs.get-packages.outputs.packages)}}
+        package: [codecheck]
     steps:
       - uses: actions/checkout@v4
         with:
