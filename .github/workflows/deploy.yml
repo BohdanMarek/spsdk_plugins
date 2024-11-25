@@ -56,8 +56,8 @@ jobs:
           attest-build-provenance-github: 'true'
           artifact-name: package-${{ matrix.package }}
 
-    - name: List files using ls
-      run: ls /tmp/baipp/dist/
+      - name: List files using ls
+        run: ls /tmp/baipp/dist/
 
   deploy:
     name: Upload Releases To PyPI
