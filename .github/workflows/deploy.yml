@@ -7,6 +7,11 @@ on:
     tags:
       - 'v*'
 
+env:
+  ACTIONS_RUNNER_DEBUG: true
+  ACTIONS_STEP_DEBUG: true
+
+
 jobs:
   get-packages:
     name: Get Package List
@@ -38,7 +43,7 @@ jobs:
     strategy:
       matrix:
         #package: ${{fromJson(needs.get-packages.outputs.packages)}}
-        package: [codecheck]
+        package: [codecheck, jlink]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -50,6 +55,9 @@ jobs:
           path: ${{ matrix.package }}
           attest-build-provenance-github: 'true'
           artifact-name: package-${{ matrix.package }}
+
+    - name: List files using ls
+      run: ls /tmp/baipp/dist/
 
   deploy:
     name: Upload Releases To PyPI
