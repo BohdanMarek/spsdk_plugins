@@ -7,11 +7,6 @@ on:
     tags:
       - 'v*'
 
-env:
-  ACTIONS_RUNNER_DEBUG: true
-  ACTIONS_STEP_DEBUG: true
-
-
 jobs:
   get-packages:
     name: Get Package List
@@ -42,8 +37,7 @@ jobs:
       attestations: write
     strategy:
       matrix:
-        #package: ${{fromJson(needs.get-packages.outputs.packages)}}
-        package: [codecheck, jlink]
+        package: ${{fromJson(needs.get-packages.outputs.packages)}}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -62,13 +56,12 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/spsdk-${{ matrix.package }} # TODO take this from pyproject.toml
+      url: https://pypi.org/
     permissions:
       id-token: write
     strategy:
       matrix:
-        #package: ${{fromJson(needs.get-packages.outputs.packages)}}
-        package: [codecheck, jlink]
+        package: ${{fromJson(needs.get-packages.outputs.packages)}}
    
     steps:
       - uses: actions/checkout@v4
