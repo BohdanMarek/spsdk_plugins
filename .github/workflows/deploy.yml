@@ -82,7 +82,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-13, macos-14, ubuntu-latest, windows-latest]
+        os: [macos-13]
         package: ["pqc"]
     environment:
       name: pypi
@@ -111,3 +111,11 @@ jobs:
           name: wheels-${{ matrix.package }}-${{ matrix.os }} # this is a "artifact already exists" workaround
           path: dist/*.whl
           overwrite: true
+
+      - name: Publish packages to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.9.0
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+          packages-dir: dist
+

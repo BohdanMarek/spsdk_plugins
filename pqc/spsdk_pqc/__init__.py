@@ -9,7 +9,7 @@
 
 __author__ = """NXP"""
 __email__ = "michal.starecek@nxp.com"
-__version__ = "0.6.1"
+__version__ = "0.0.1"
 
 from .errors import PQCError
 from .wrapper import (
