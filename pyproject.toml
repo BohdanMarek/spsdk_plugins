@@ -4,7 +4,7 @@ name = "spsdk_plugins"
 
 [tool.release-tools]
 disabled = ['docs']
-sub_projects = [ "codecheck", "keyfactor", "jlink", "mcu_link", "lauterbach", "pemicro", "pkcs11", "pqc", "pylint_plugins", "pyocd" ]
+sub_projects = [ "codecheck" ]
 
 [tool.release-tools.scr]
 scr_file = "SW_Content_Register_SPSDK_plugins.txt"

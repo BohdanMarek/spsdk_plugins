@@ -73,6 +73,7 @@ jobs:
       - name: Publish packages to PyPI
         uses: pypa/gh-action-pypi-publish@v1.12.4
         with:
+          repository-url: https://test.pypi.org/legacy/
           skip-existing: true
 
   build_deploy_wheels:
