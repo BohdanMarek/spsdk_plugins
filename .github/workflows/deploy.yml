@@ -76,7 +76,7 @@ jobs:
           repository-url: https://test.pypi.org/legacy/
           skip-existing: true
 
-  build_deploy_wheels:
+  build_wheels:
     name: Wheel ${{ matrix.package}} on ${{ matrix.os}}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -112,10 +112,32 @@ jobs:
           path: dist/*.whl
           overwrite: true
 
-      - name: Publish packages to PyPI
+
+  deploy_wheels:
+    name: Deploy Wheels to TestPyPI
+    needs: [build_wheels]
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Create dist directory
+        run: mkdir -p dist
+      
+      - name: Download all wheel artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          path: dist
+          merge-multiple: true
+
+      - name: Publish wheels to TestPyPI
         uses: pypa/gh-action-pypi-publish@v1.9.0
         with:
           repository-url: https://test.pypi.org/legacy/
           skip-existing: true
           packages-dir: dist
-
