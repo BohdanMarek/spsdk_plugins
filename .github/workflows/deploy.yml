@@ -26,55 +26,55 @@ jobs:
         run: |
           python -c "import toml; print('packages=' + str(toml.load('pyproject.toml')['tool']['release-tools']['sub_projects']))" >> $GITHUB_OUTPUT
 
-  package:
-    name: Build Packages
-    needs: [get-packages]
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      attestations: write
-    strategy:
-      matrix:
-        package: ${{fromJson(needs.get-packages.outputs.packages)}}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  # package:
+  #   name: Build Packages
+  #   needs: [get-packages]
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     id-token: write
+  #     attestations: write
+  #   strategy:
+  #     matrix:
+  #       package: ${{fromJson(needs.get-packages.outputs.packages)}}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Build and Check Package
-        uses: hynek/build-and-inspect-python-package@v2.12.0
-        with:
-          path: ${{ matrix.package }}
-          attest-build-provenance-github: 'true'
-          upload-name-suffix: -${{ matrix.package }}
-          skip-wheel: 'true'
+  #     - name: Build and Check Package
+  #       uses: hynek/build-and-inspect-python-package@v2.12.0
+  #       with:
+  #         path: ${{ matrix.package }}
+  #         attest-build-provenance-github: 'true'
+  #         upload-name-suffix: -${{ matrix.package }}
+  #         skip-wheel: 'true'
 
-  deploy_sdist:
-    name: Upload Releases To PyPI
-    needs: [get-packages, package]
-    runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/
-    permissions:
-      id-token: write
-    strategy:
-      matrix:
-        package: ${{fromJson(needs.get-packages.outputs.packages)}}
-    steps:
-      - uses: actions/checkout@v4.2.2
+  # deploy_sdist:
+  #   name: Upload Releases To PyPI
+  #   needs: [get-packages, package]
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: pypi
+  #     url: https://pypi.org/
+  #   permissions:
+  #     id-token: write
+  #   strategy:
+  #     matrix:
+  #       package: ${{fromJson(needs.get-packages.outputs.packages)}}
+  #   steps:
+  #     - uses: actions/checkout@v4.2.2
 
-      - name: Download Package
-        uses: actions/download-artifact@v4.3.0
-        with:
-          name: Packages-${{ matrix.package }}
-          path: dist
+  #     - name: Download Package
+  #       uses: actions/download-artifact@v4.3.0
+  #       with:
+  #         name: Packages-${{ matrix.package }}
+  #         path: dist
 
-      - name: Publish packages to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.12.4
-        with:
-          repository-url: https://test.pypi.org/legacy/
-          skip-existing: true
+  #     - name: Publish packages to PyPI
+  #       uses: pypa/gh-action-pypi-publish@v1.12.4
+  #       with:
+  #         repository-url: https://test.pypi.org/legacy/
+  #         skip-existing: true
 
   build_wheels:
     name: Wheel ${{ matrix.package}} on ${{ matrix.os}}
@@ -136,7 +136,7 @@ jobs:
           merge-multiple: true
 
       - name: Publish wheels to TestPyPI
-        uses: pypa/gh-action-pypi-publish@v1.9.0
+        uses: pypa/gh-action-pypi-publish@v1.12.4
         with:
           repository-url: https://test.pypi.org/legacy/
           skip-existing: true
