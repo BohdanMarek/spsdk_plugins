@@ -40,9 +40,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+        
       - name: Build and Check Package
         uses: hynek/build-and-inspect-python-package@v2.12.0
         with:
@@ -50,9 +52,7 @@ jobs:
           attest-build-provenance-github: 'true'
           upload-name-suffix: -${{ matrix.package }}
           skip-wheel: 'true'
-          python-version: '3.13'
-        env:
-          PYO3_USE_ABI3_FORWARD_COMPATIBILITY: '1'
+
 #  deploy_sdist:
 #    name: Upload Releases To PyPI
 #    needs: [get-packages, build_sdist]
