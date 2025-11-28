@@ -52,6 +52,8 @@ jobs:
           attest-build-provenance-github: 'true'
           upload-name-suffix: -${{ matrix.package }}
           skip-wheel: 'true'
+       env:
+          UV_PYTHON: ${{ steps.setup-python.outputs.python-path }}
 
 #  deploy_sdist:
 #    name: Upload Releases To PyPI
@@ -79,41 +81,41 @@ jobs:
 #        with:
 #          skip-existing: true
 
-  build_wheels:
-    name: Wheel ${{ matrix.package}} on ${{ matrix.os}}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-13, macos-14, ubuntu-latest, windows-latest]
-        package: ["pqc"]
-    environment:
-      name: pypi
-      url: https://pypi.org/
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4.2.2
+#  build_wheels:
+#    name: Wheel ${{ matrix.package}} on ${{ matrix.os}}
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        os: [macos-13, macos-14, ubuntu-latest, windows-latest]
+#        package: ["pqc"]
+#    environment:
+#      name: pypi
+#      url: https://pypi.org/
+#   permissions:
+#      id-token: write
+#   steps:
+#     - uses: actions/checkout@v4.2.2#
 
-      - uses: actions/setup-python@v5.6.0
-        name: Install Python
-        with:
-          python-version: '3.x'
+#      - uses: actions/setup-python@v5.6.0
+#        name: Install Python
+#        with:
+#          python-version: '3.x'
 
-      - name: Build wheels
-        uses: pypa/cibuildwheel@v2.23.3
-        with:
-          package-dir: ${{ matrix.package }}
-          output-dir: dist
-        env:
-          CIBW_SKIP: "pp*"
+#      - name: Build wheels
+#        uses: pypa/cibuildwheel@v2.23.3
+#        with:
+#          package-dir: ${{ matrix.package }}
+#          output-dir: dist
+#        env:
+#          CIBW_SKIP: "pp*"
 
-      - name: Publish packages to GH
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: wheels-${{ matrix.package }}-${{ matrix.os }} # this is a "artifact already exists" workaround
-          path: dist/*.whl
-          overwrite: true
+#      - name: Publish packages to GH
+#        uses: actions/upload-artifact@v4.6.2
+#        with:
+#          name: wheels-${{ matrix.package }}-${{ matrix.os }} # this is a "artifact already exists" workaround
+#          path: dist/*.whl
+#          overwrite: true
 
 
 #  deploy_wheels:
