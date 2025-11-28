@@ -48,32 +48,33 @@ jobs:
           attest-build-provenance-github: 'true'
           upload-name-suffix: -${{ matrix.package }}
           skip-wheel: 'true'
+          python-version: '3.13'
 
-  deploy_sdist:
-    name: Upload Releases To PyPI
-    needs: [get-packages, build_sdist]
-    runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/
-    permissions:
-      id-token: write
-    strategy:
-      matrix:
-        package: ${{fromJson(needs.get-packages.outputs.packages)}}
-    steps:
-      - uses: actions/checkout@v4.2.2
-
-      - name: Download Package
-        uses: actions/download-artifact@v4.3.0
-        with:
-          name: Packages-${{ matrix.package }}
-          path: dist
-
-      - name: Publish packages to PyPI
-        uses: pypa/gh-action-pypi-publish@1.13.0
-        with:
-          skip-existing: true
+#  deploy_sdist:
+#    name: Upload Releases To PyPI
+#    needs: [get-packages, build_sdist]
+#    runs-on: ubuntu-latest
+#    environment:
+#      name: pypi
+#      url: https://pypi.org/
+#    permissions:
+#      id-token: write
+#    strategy:
+#      matrix:
+#        package: ${{fromJson(needs.get-packages.outputs.packages)}}
+#    steps:
+#      - uses: actions/checkout@v4.2.2
+#
+#      - name: Download Package
+#        uses: actions/download-artifact@v4.3.0
+#        with:
+#          name: Packages-${{ matrix.package }}
+#          path: dist
+#
+#      - name: Publish packages to PyPI
+#        uses: pypa/gh-action-pypi-publish@1.13.0
+#        with:
+#          skip-existing: true
 
   build_wheels:
     name: Wheel ${{ matrix.package}} on ${{ matrix.os}}
@@ -112,30 +113,30 @@ jobs:
           overwrite: true
 
 
-  deploy_wheels:
-    name: Deploy Wheels to PyPI
-    needs: [build_wheels]
-    runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
+#  deploy_wheels:
+#    name: Deploy Wheels to PyPI
+#    needs: [build_wheels]
+#    runs-on: ubuntu-latest
+#    environment:
+#      name: pypi
+#      url: https://pypi.org/
+#    permissions:
+#      id-token: write
+#    steps:
+#      - uses: actions/checkout@v4
+#      
+#      - name: Create dist directory
+#        run: mkdir -p dist
       
-      - name: Create dist directory
-        run: mkdir -p dist
-      
-      - name: Download all wheel artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: wheels-*
-          path: dist
-          merge-multiple: true
+#      - name: Download all wheel artifacts
+#        uses: actions/download-artifact@v4
+#        with:
+#          pattern: wheels-*
+#          path: dist
+#          merge-multiple: true
 
-      - name: Publish wheels to PyPI
-        uses: pypa/gh-action-pypi-publish@1.13.0 # v1.12.4 is needed to support metadata v2.4 including PEP 639
-        with:
-          skip-existing: true
-          packages-dir: dist
+#      - name: Publish wheels to PyPI
+#        uses: pypa/gh-action-pypi-publish@1.13.0 # v1.12.4 is needed to support metadata v2.4 including PEP 639
+#        with:
+#          skip-existing: true
+#          packages-dir: dist
