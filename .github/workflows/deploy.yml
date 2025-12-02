@@ -85,15 +85,45 @@ jobs:
 #        with:
 #          skip-existing: true
 
-  build_wheels:
+  build_pure_wheels:
+    name: Build Pure Python Wheels
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # All packages except pqc (which has C extensions)
+        package: [keyfactor, jlink, mcu_link, lauterbach, pemicro, pkcs11, pylint_plugins, pyocd, offline_signature_provider]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install build tools
+        run: pip install build
+
+      - name: Build universal wheel
+        run: python -m build --wheel ${{ matrix.package }}
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: wheels-${{ matrix.package }}
+          path: dist/*.whl
+          overwrite: true
+
+  build_compiled_wheels:
     name: Wheel ${{ matrix.package}} on ${{ matrix.os}}
-    needs: [get-packages]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [macos-13, macos-14, ubuntu-latest, windows-latest]
-        package: ${{fromJson(needs.get-packages.outputs.packages)}}
+        package: ["pqc"]
     environment:
       name: pypi
       url: https://pypi.org/
@@ -125,7 +155,7 @@ jobs:
 
 #  deploy_wheels:
 #    name: Deploy Wheels to PyPI
-#    needs: [build_wheels]
+#    needs: [build_compiled_wheels]
 #    runs-on: ubuntu-latest
 #    environment:
 #      name: pypi
