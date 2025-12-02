@@ -152,28 +152,27 @@ jobs:
           path: dist/*.whl
           overwrite: true
 
-
-#  deploy_wheels:
-#    name: Deploy Wheels to PyPI
-#    needs: [build_compiled_wheels]
-#    runs-on: ubuntu-latest
-#    environment:
-#      name: pypi
-#      url: https://pypi.org/
-#    permissions:
-#      id-token: write
-#    steps:
-#      - uses: actions/checkout@v4
-#      
-#      - name: Create dist directory
-#        run: mkdir -p dist
+  deploy_wheels:
+   name: Deploy Wheels to PyPI
+   needs: [build_compiled_wheels, build_pure_wheels]
+   runs-on: ubuntu-latest
+   environment:
+     name: pypi
+     url: https://pypi.org/
+   permissions:
+     id-token: write
+   steps:
+     - uses: actions/checkout@v4
+     
+     - name: Create dist directory
+       run: mkdir -p dist
       
-#      - name: Download all wheel artifacts
-#        uses: actions/download-artifact@v4
-#        with:
-#          pattern: wheels-*
-#          path: dist
-#          merge-multiple: true
+     - name: Download all wheel artifacts
+       uses: actions/download-artifact@v4
+       with:
+         pattern: wheels-*
+         path: dist
+         merge-multiple: true
 
 #      - name: Publish wheels to PyPI
 #        uses: pypa/gh-action-pypi-publish@1.13.0 # v1.12.4 is needed to support metadata v2.4 including PEP 639
