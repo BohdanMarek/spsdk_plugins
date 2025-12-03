@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       packages: ${{ steps.get-packages.outputs.packages }}
+      compiled_packages: ${{ steps.get-packages.outputs.compiled_packages }}
+      pure_python_packages: ${{ steps.get-packages.outputs.pure_python_packages }}
     steps:
       - uses: actions/checkout@v4
       
