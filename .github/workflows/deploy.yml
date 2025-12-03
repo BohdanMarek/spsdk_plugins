@@ -23,7 +23,16 @@ jobs:
           
       - id: get-packages
         run: |
-          python -c "import toml; print('packages=' + str(toml.load('pyproject.toml')['tool']['release-tools']['sub_projects']))" >> $GITHUB_OUTPUT
+          python << 'EOF' >> $GITHUB_OUTPUT
+          import toml
+          config = toml.load('pyproject.toml')['tool']['release-tools']
+          all_packages = config['sub_projects']
+          compiled = ['pqc']
+          pure = [p for p in all_packages if p not in compiled]
+          print(f'packages={all_packages}')
+          print(f'pure_python_packages={pure}')
+          print(f'compiled_packages={compiled}')
+          EOF
 
   # build_sdist:
   #   name: Build Packages
@@ -88,13 +97,14 @@ jobs:
   build_pure_wheels:
     name: Build Pure Python Wheels
     runs-on: ubuntu-latest
+    needs: [get-packages]
     permissions:
       id-token: write
     strategy:
       fail-fast: false
       matrix:
         # All packages except pqc (which has C extensions)
-        package: [keyfactor, jlink, mcu_link, lauterbach, pemicro, pkcs11, pylint_plugins, pyocd, offline_signature_provider]
+        package: ${{fromJson(needs.get-packages.outputs.pure_python_packages)}}
     steps:
       - uses: actions/checkout@v4
 
@@ -119,11 +129,12 @@ jobs:
   build_compiled_wheels:
     name: Wheel ${{ matrix.package}} on ${{ matrix.os}}
     runs-on: ${{ matrix.os }}
+    needs: [get-packages]
     strategy:
       fail-fast: false
       matrix:
         os: [macos-13, macos-14, ubuntu-latest, windows-latest]
-        package: ["pqc"]
+        package: ${{fromJson(needs.get-packages.outputs.compiled_packages)}}
     environment:
       name: pypi
       url: https://pypi.org/
