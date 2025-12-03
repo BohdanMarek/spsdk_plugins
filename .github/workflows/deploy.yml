@@ -23,16 +23,16 @@ jobs:
           
       - id: get-packages
         run: |
-          python << 'EOF' >> $GITHUB_OUTPUT
-          import toml
+          python -c "
+          import toml, json
           config = toml.load('pyproject.toml')['tool']['release-tools']
           all_packages = config['sub_projects']
           compiled = ['pqc']
           pure = [p for p in all_packages if p not in compiled]
-          print(f'packages={all_packages}')
-          print(f'pure_python_packages={pure}')
-          print(f'compiled_packages={compiled}')
-          EOF
+          print(f'packages={json.dumps(all_packages)}')
+          print(f'pure_python_packages={json.dumps(pure)}')
+          print(f'compiled_packages={json.dumps(compiled)}')
+          " >> $GITHUB_OUTPUT
 
   # build_sdist:
   #   name: Build Packages
