@@ -49,8 +49,9 @@ jobs:
       - name: Install latest uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
         shell: bash
+   
       - name: Build and Check Package
-        uses: BohdanMarek/build-and-inspect-python-package@2ddd2fd011405ab6e7d6d04f4becbe80547ca68d
+        uses: hynek/build-and-inspect-python-package@2ddd2fd011405ab6e7d6d04f4becbe80547ca68d
         with:
           path: ${{ matrix.package }}
           attest-build-provenance-github: 'true'
